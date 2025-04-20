@@ -7,8 +7,10 @@ import HomeScreen from './src/screens/HomeScreen';
 import LessonScreen from './src/screens/LessonScreen';
 import RewardScreen from './src/screens/RewardScreen';
 import AdminScreen from './src/screens/AdminScreen';
+import CommunityFeedScreen from './src/screens/CommunityFeedScreen';
 
 import { signInAnonymously } from './src/services/firebase/auth';
+import { initUserProfile } from './src/services/user';
 
 LogBox.ignoreLogs(['AsyncStorage']); // Optional: suppress RN Firebase warning spam
 
@@ -16,15 +18,19 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   useEffect(() => {
-    const login = async () => {
+    const setup = async () => {
       try {
         const uid = await signInAnonymously();
         console.log('✅ Signed in anonymously:', uid);
+
+        const userRef = await initUserProfile();
+        console.log('📦 Firestore user profile ready at:', userRef.path);
       } catch (error) {
-        console.error('🔥 Firebase sign-in error:', error);
+        console.error('🔥 Firebase setup error:', error);
       }
     };
-    login();
+
+    setup();
   }, []);
 
   return (
@@ -34,6 +40,7 @@ export default function App() {
         <Stack.Screen name="Lesson" component={LessonScreen} />
         <Stack.Screen name="Reward" component={RewardScreen} />
         <Stack.Screen name="Admin" component={AdminScreen} />
+        <Stack.Screen name="Community" component={CommunityFeedScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,20 +1,28 @@
 import { db } from './firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import { getHashedDeviceId } from './device-id';
 
-export const initUser = async () => {
+export const initUserProfile = async () => {
+  const firebaseUser = auth().currentUser;
+  if (!firebaseUser) throw new Error('Not signed in.');
+
   const deviceId = await getHashedDeviceId();
   const userRef = db.collection('users').doc(deviceId);
-  const doc = await userRef.get();
+  const snapshot = await userRef.get();
 
-  if (!doc.exists) {
+  if (!snapshot.exists) {
     await userRef.set({
       device_id: deviceId,
-      email: null,
+      auth_uid: firebaseUser.uid,
       points: 0,
       streak: 0,
-      completed_modules: [],
-      redemption_log: [],
+      last_lesson_date: null,
+      completed_lessons: [],
+      redemption_requests: [],
     });
+    console.log(`🆕 New user profile created: ${deviceId}`);
+  } else {
+    console.log(`👤 Existing user loaded: ${deviceId}`);
   }
 
   return userRef;
