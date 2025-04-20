@@ -1,4 +1,4 @@
-package com.projectve
+package com.finderverse.projectve
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

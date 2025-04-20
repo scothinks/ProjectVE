@@ -1,4 +1,4 @@
-package com.projectve
+package com.finderverse.projectve
 
 import android.app.Application
 import com.facebook.react.PackageList
